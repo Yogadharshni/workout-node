@@ -5,6 +5,8 @@ console.log(process.env.MONGO_URL)
 import express from "express"; // "type": "module"
 import { MongoClient } from "mongodb";
 import moviesRouter from './router/movies.router.js'
+import cors from 'cors';
+
 
 //express.json()
 //intercepts -> apply midleware -> converting body to json
@@ -21,11 +23,14 @@ export const client = new MongoClient(MONGO_URL); // dial
 // Top level await
 await client.connect(); // call
 console.log("Mongo is connected !!!  ");
+app.use(cors())
+
 app.use(express.json())
+
 
 app.get("/", function (request, response) {
   response.send('Welcome to my App');
 });
 
-app.use('./movies', moviesRouter)
+app.use('/movies', moviesRouter)
 app.listen(PORT, () => console.log(`The server started in: ${PORT} ✨✨`));
