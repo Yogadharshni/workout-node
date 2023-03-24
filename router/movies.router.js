@@ -7,6 +7,7 @@ import {
     updateMoviebyId
 } from "../service/movies.service.js";
 export const router = express.Router();
+import bcrypt from 'bcrypt';
 
 
 router.get("/", async function (request, response) {

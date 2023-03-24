@@ -1,7 +1,6 @@
 {
   "name": "workout-node",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -13,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
@@ -20,5 +20,14 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.21"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yogadharshni/workout-node.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Yogadharshni/workout-node/issues"
+  },
+  "homepage": "https://github.com/Yogadharshni/workout-node#readme",
+  "description": ""
 }
