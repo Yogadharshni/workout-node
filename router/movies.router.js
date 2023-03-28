@@ -7,10 +7,11 @@ import {
     updateMoviebyId
 } from "../service/movies.service.js";
 export const router = express.Router();
+import { auth } from "../middleware/auth.js"
 import bcrypt from 'bcrypt';
 
 
-router.get("/", async function (request, response) {
+router.get("/", auth, async function (request, response) {
     //db.movies.find({})
     const movies = await getMovies(); //cursor(pagination) to array
 

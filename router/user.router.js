@@ -1,9 +1,11 @@
 import express from "express";
-import { getUserByName, createUser, loginUser } from "../service/user.service.js";
-const router = express.Router();
+import { getUserByName, createUser } from "../service/user.service.js";
+
 import bcrypt from 'bcrypt';
+import Jwt from 'jsonwebtoken';
 
 
+const router = express.Router();
 //to get hash password(also install npm i bcrypt and import)
 async function generateHashedPassword(password) {
     const NO_OF_ROUNDS = 10;
@@ -11,6 +13,7 @@ async function generateHashedPassword(password) {
     const hashedPassword = await bcrypt.hash(password, salt)
     console.log(salt)
     console.log(hashedPassword)
+    return hashedPassword;
 }
 // generateHashedPassword('Yoga@123')
 
@@ -24,7 +27,9 @@ router.post("/signup", async function (request, response) {
         response.status(400).send({ message: 'Username already exists' });
     }
     else if (password.length < 8) {
-        response.status(400).send({ message: 'Password must be atleast 8 characters' });
+        response
+            .status(400)
+            .send({ message: 'Password must be atleast 8 characters' });
     } else {
         const hashedPassword = await generateHashedPassword(password)
         const result = await createUser({
@@ -40,17 +45,19 @@ router.post("/signup", async function (request, response) {
 router.post("/login", async function (request, response) {
 
     const { username, password } = request.body;
-    const userFormDB = await loginUser(username)
+    const userFormDB = await getUserByName(username)
     console.log(userFormDB);
 
     if (!userFormDB) {
         response.status(400).send({ message: 'Invalid credentials' });
-    } else {
+    }
+    else {
         const storedDBPassword = userFormDB.password
         const isPasswordCheck = await bcrypt.compare(password, storedDBPassword)
         console.log(isPasswordCheck)
         if (isPasswordCheck) {
-            response.send({ message: 'Successful Login' });
+            const token = Jwt.sign({ id: userFormDB }, process.env.SECRET_KEY)
+            response.send({ message: 'Successful Login', token: token });
         } else {
             response.status(400).send({ message: 'Invalid credentials' });
         }
