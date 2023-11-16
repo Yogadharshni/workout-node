@@ -5,6 +5,8 @@
 // use b42wd2
 // show collections
 // db.movies.insertMany(data)
+// db.collection.insertmany(datas)
+//db==>b42dw2  collection==> movies
 
 
 // mongosh
@@ -106,9 +108,20 @@ db.movies.insertMany([
 db.movies.find({})
 db.movies.findOne({ name: 'RRR' })
 db.movies.findOne({ rating: 8.8 })
+
+//operator key starts with sign $
 db.movies.find({ rating: { $gt: 8.5 } })
 db.movies.find({ rating: { $lt: 8.5 } })
+
+
+// select  name,rating from movies where rating < 8.5 
+// projections ===>    1 inclusion   0 exclusion
+// cannot mix exclusion and inclusion ( but we can use for _id alone )
+
+//only rating and name column 
 db.movies.find({ rating: { $lt: 8.5 } }, { rating: 1, name: 1 })
+
+//except rating and name ever column will come
 db.movies.find({ rating: { $lt: 8.5 } }, { rating: 0, name: 0 })
 //in
 
@@ -128,7 +141,18 @@ db.movies.find(
   { rating: { $gte: 8.5, $lte: 9 } },
   { _id: 0, name: 1, rating: 1 }
 )
-//sorting
+
+//eqal to nd not eqal to
+db.movies.find(
+  { rating: { $eq: 8} },
+  { _id: 0, name: 1, rating: 1 }
+)
+db.movies.find(
+  { rating: { $ne: 8} },
+  { _id: 0, name: 1, rating: 1 }
+)
+
+//sorting ( 1 = asc    /   -1 =  desc)
 db.movies.find({}, { _id: 0, name: 1, rating: 1 }).sort({ rating: 1 })
 db.movies.find({}, { _id: 0, name: 1, rating: 1 }).sort({ rating: -1 })
 
@@ -157,15 +181,22 @@ db.orders.find({})
 
 // to find where status = urgent
 db.orders.aggregate([
-  { '$match': { status: 'urgent' } }
+  { $match: { status: 'urgent' } }
 ])
 
 //to find sum of products where status = urgent
+// $productName => $  to take productname's value
 db.orders.aggregate([
   { $match: { status: 'urgent' } },
-  { $group: { _id: '$productName', TotalQty: { $sum: '$quantity' } } }
+  { $group: 
+    { _id: '$productName', TotalQty: { $sum: '$quantity' } } }
 ])
+
+
 
 // to add lang to all data
 db.movies.updateMany({}, { $set: { language: 'English' } })
 db.movies.find({}, { name: 1, language: 1 })
+
+//to update one movie ps2 language  as tamil
+db.movies.updateOne({name: 'PS2'}, { $set: { language: 'Tamil' } })
